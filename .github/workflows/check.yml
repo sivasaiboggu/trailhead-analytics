@@ -1,0 +1,22 @@
+name: Check analytics
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:7
+        ports:
+          - 27017:27017
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npm test
+      - run: node scripts/check-api.js
+        env:
+          MONGODB_URI: mongodb://127.0.0.1:27017/trailhead_ci
