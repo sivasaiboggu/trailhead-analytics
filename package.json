@@ -1,0 +1,1 @@
+{"name":"trailhead-analytics","version":"1.0.0","private":true,"type":"module","scripts":{"start":"node server.js","test":"node --test"},"dependencies":{"express":"^5.1.0","mongodb":"^6.20.0","react":"18.3.1","react-dom":"18.3.1"}}
