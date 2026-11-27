@@ -1,5 +1,7 @@
 # Trailhead
 
+Built for the CausalFunnel Full Stack Engineer assignment.
+
 Follow a visit from the first page view to the last click. Trailhead pairs a small embeddable tracker with a session timeline and a document-relative click map. The included walking-journal demo generates real traffic for both views.
 
 ## Run locally
@@ -13,7 +15,9 @@ npm test
 npm start
 ```
 
-Open http://localhost:3000. Choose **Open demo**, expand a route note, then return to the dashboard and choose **Refresh**. Select your session to inspect the timestamp, page and coordinates. Switch to **Click map** to see where the clicks landed. Reload the demo to add a second page view to the same session.
+Open http://localhost:3000. Choose **Open demo**, expand a route note, then return to the dashboard and choose **Refresh**. The dashboard also refreshes itself every 10 seconds while it is visible. Select your session to inspect the timestamp, page and coordinates. Switch to **Click map** to see where the clicks landed. Reload the demo to add a second page view to the same session. The demo has a second page, /trail.html, so one visit can span two pages.
+
+Integration check: `node scripts/check-api.js` (needs MongoDB running).
 
 For an existing MongoDB instance, skip Compose and set `MONGODB_URI` to a connection string including the database name. The default is `mongodb://127.0.0.1:27017/trailhead`. The server reads `PORT` (default 3000).
 
@@ -30,7 +34,7 @@ For HTTPS pages serve the tracker and API from an HTTPS origin. The script sends
 | Method and path | Result |
 | --- | --- |
 | POST /api/events | Validate and store one event. Returns 201 on success and 400 for invalid input. |
-| GET /api/sessions | Session IDs, counts and last activity, newest first. |
+| GET /api/sessions | Session IDs, counts, first and last activity, and first page, newest first. |
 | GET /api/sessions/:id | Events in ascending timestamp order. |
 | GET /api/pages | Distinct tracked page URLs. |
 | GET /api/clicks?url=… | Raw click positions and source document dimensions. URL-encode the page URL. |

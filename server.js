@@ -3,8 +3,14 @@ import { MongoClient } from 'mongodb'
 import { resolve } from 'node:path'
 import { parseEvent } from './event.js'
 
-const db = new MongoClient(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/trailhead')
-await db.connect()
+const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/trailhead'
+const db = new MongoClient(mongoUri)
+try {
+  await db.connect()
+} catch {
+  console.error(`Cannot reach MongoDB at ${mongoUri} — run "docker compose up -d mongo" or set MONGODB_URI`)
+  process.exit(1)
+}
 const events = db.db().collection('events')
 await events.createIndex({session_id:1,timestamp:1})
 await events.createIndex({type:1,url:1})
@@ -23,7 +29,8 @@ app.post('/api/events', async (req,res) => {
   res.sendStatus(201)
 })
 app.get('/api/sessions', async (_,res) => res.json(await events.aggregate([
-  {$group:{_id:'$session_id',count:{$sum:1},last:{$max:'$timestamp'}}}, {$sort:{last:-1,_id:1}}
+  {$sort:{timestamp:1}},
+  {$group:{_id:'$session_id',count:{$sum:1},first:{$min:'$timestamp'},last:{$max:'$timestamp'},firstUrl:{$first:'$url'}}}, {$sort:{last:-1,_id:1}}
 ]).toArray()))
 app.get('/api/sessions/:id', async (req,res) => res.json(await events.find({session_id:req.params.id}).sort({timestamp:1,_id:1}).toArray()))
 app.get('/api/pages', async (_,res) => res.json((await events.distinct('url')).sort()))
@@ -35,5 +42,13 @@ for (const [name,path] of Object.entries({react:'react/umd/react.production.min.
   app.get('/vendor/'+name+'.js', (_,res) => res.sendFile(resolve('node_modules',path)))
 app.use(express.static('public'))
 app.use((err,req,res,next) => { console.error(err.message); res.status(err.status || 500).json({error:'Request failed'}) })
-app.listen(process.env.PORT || 3000)
+const port = process.env.PORT || 3000
+const server = app.listen(port)
+server.on('error', err => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`Port ${port} is already in use`)
+    process.exit(1)
+  }
+  throw err
+})
 

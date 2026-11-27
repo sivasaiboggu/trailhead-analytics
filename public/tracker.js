@@ -1,5 +1,7 @@
 (() => {
-  const endpoint = new URL('/api/events', document.currentScript.src)
+  try {
+  const script = document.currentScript || document.querySelector('script[src$="tracker.js"]')
+  const endpoint = new URL('/api/events', script ? script.src : location.origin)
   const key = 'trailhead.session'
   let current
   function send(type, geometry = {}) {
@@ -18,4 +20,5 @@
     const root = document.documentElement
     send('click',{x:e.pageX,y:e.pageY,width:Math.max(root.clientWidth,root.scrollWidth),height:Math.max(root.clientHeight,root.scrollHeight)})
   }, true)
+  } catch {}
 })()

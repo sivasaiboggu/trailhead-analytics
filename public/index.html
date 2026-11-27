@@ -1,1 +1,7 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Trailhead · Session analytics</title><link rel="stylesheet" href="/style.css"><script defer src="/vendor/react.js"></script><script defer src="/vendor/reactdom.js"></script><script defer src="/dashboard.js"></script></head><body><header><strong>Trailhead</strong><a href="/demo.html" target="_blank" rel="noopener">Open demo ↗</a></header><main id="app"></main></body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Trailhead · Session analytics</title><link rel="stylesheet" href="/style.css"><script defer src="/vendor/react.js"></script><script defer src="/vendor/reactdom.js"></script><script defer src="/dashboard.js"></script></head><body><header><strong>Trailhead</strong><a href="/demo.html" target="_blank" rel="noopener">Open demo ↗</a></header><main id="app"></main><script>
+window.addEventListener('DOMContentLoaded', () => {
+  if (!window.React || !window.ReactDOM) {
+    document.getElementById('app').textContent = 'Dashboard scripts did not load — run `npm install` first.'
+  }
+})
+</script></body></html>
