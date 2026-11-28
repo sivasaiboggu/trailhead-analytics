@@ -40,6 +40,14 @@ const CLICK_LIMIT = 5000
 const app = express()
 app.disable('x-powered-by')
 
+// Every response carries nosniff so a browser never sniffs a served asset
+// (tracker, dashboard, vendor scripts) into a different content type.
+app.use((req, res, next) => { res.set('X-Content-Type-Options', 'nosniff'); next() })
+
+// Liveness probe for operators and monitors. It answers only once the
+// server is listening (which implies MongoDB connected at startup).
+app.get('/health', (_, res) => res.json({ status: 'ok' }))
+
 // CORS allow-list (M6). With ALLOWED_ORIGINS unset the API answers only
 // same-origin callers: the tracker is served from this origin in the demo.
 // Operators embedding the tracker elsewhere set ALLOWED_ORIGINS to a

@@ -42,6 +42,7 @@ For HTTPS pages serve the tracker and API from an HTTPS origin. The script sends
 | GET /api/sessions/:id | Events in ascending event-time order (ties broken by server receipt time, then insertion order). Limited to 1000 events. |
 | GET /api/pages | Distinct tracked page URLs. |
 | GET /api/clicks?url=… | Pointer-click positions and source document dimensions for one page (keyboard clicks excluded). URL-encode the page URL. Limited to 5000 clicks. |
+| GET /health | Liveness probe. Returns `{"status": "ok"}` once the server is up (MongoDB connected). |
 
 A complete valid page view:
 
@@ -91,4 +92,8 @@ Cross-origin embedding is closed by default: `POST /api/events` answers CORS onl
 
 - [MDN — MouseEvent.pageX](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/pageX) explains the document coordinate system used by the tracker.
 - [MongoDB — Indexes](https://www.mongodb.com/docs/manual/indexes/) describes how indexes support filtered queries.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
 

@@ -53,6 +53,11 @@ try {
   for (const path of ['/demo.html', '/trail.html', '/tracker.js', '/dashboard.js', '/vendor/react.js', '/vendor/reactdom.js']) {
     assert.equal((await fetch(base + path)).status, 200, path)
   }
+  // Health probe and the nosniff header on every response.
+  const health = await fetch(base + '/health')
+  assert.equal(health.status, 200, 'health')
+  assert.deepEqual(await health.json(), { status: 'ok' })
+  assert.equal((await fetch(base + '/')).headers.get('x-content-type-options'), 'nosniff', 'nosniff header')
   assert.equal((await post({})).status, 400)
   assert.equal((await postRaw('{not json')).status, 400, 'malformed JSON')
   assert.equal((await post({ ...view, url: 123 })).status, 400, 'url must be a string')
